@@ -1,0 +1,55 @@
+/* All selectors are descendents of #shortcuts to constrain styles to this extension */
+#shortcuts .resizable-content {
+    height: 175px;
+    overflow: auto;
+}
+
+#shortcuts table td {
+    line-height: 14px;
+    padding: 4px 10px;
+}
+
+#shortcuts table .shortcut-header td {
+    font-weight: bold;
+    background-color: #404040;
+    padding: 0;
+}
+
+#shortcuts table .shortcut-header td a {
+    display: block;
+    color: #fff;
+    padding: 4px 10px;
+    text-decoration: none;
+    -webkit-transition: background-color 400ms ease-out 0ms;
+}
+
+#shortcuts table .shortcut-header td a:hover {
+    cursor: pointer;
+    background-color: #808080;
+}
+
+#shortcuts .toolbar {
+    display: block;
+}
+
+#shortcuts .toolbar .shortcuts-close {
+    font-weight: bold;
+    font-height: 20px;
+    color: #999;
+    float: right;
+    margin-right: 5px;
+}
+
+#shortcuts .toolbar .shortcuts-close:hover {
+    text-decoration: none;
+    color: #000;
+}
+
+#shortcuts .toolbar button.copy-table {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    float: right;
+    padding: 0 10px;
+    margin-right: 20px;
+    font-size: 90%;
+}

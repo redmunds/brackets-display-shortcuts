@@ -1,0 +1,16 @@
+<table>
+    <tr class="shortcut-header">
+        <td class="shortcut-base"><a>Base Key</a></td>
+        <td class="shortcut-binding"><a>Key Binding</a></td>
+        <td class="shortcut-cmd"><a>Command</a></td>
+        <td class="shortcut-orig"><a>Origin</a></td>
+    </tr>
+    {{#keyList}}
+    <tr>
+        <td class="shortcut-base">{{keyBase}}</td>
+        <td class="shortcut-binding">{{keyBinding}}</td>
+        <td class="shortcut-cmd">{{commandID}}</td>
+        <td class="shortcut-orig">{{origin}}</td>
+    </tr>
+    {{/keyList}}
+</table>
