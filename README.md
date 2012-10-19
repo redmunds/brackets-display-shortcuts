@@ -21,3 +21,9 @@ All columns are sortable in both ascending and descending order.
 Display of "Extension" in Origin column is dependent on command using proper naming convention.
 
 Button to "Copy to Current Document" inserts Table HTML markup at the current selection. It only works for full editor.
+
+
+
+## License
+
+MIT-licensed -- see _main.js_ for details.
