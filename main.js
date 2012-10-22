@@ -84,14 +84,35 @@ define(function (require, exports, module) {
         return -1;
     }
 
+    function _ucFirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    // "ReloadInBrowser" => "Reload In Browser"
+    // "extension_manager" => "Extension Manager"
+    function _humanizeString(string) {
+        // Replace "foo_bar" with "foo bar" and "FooBar" with " Foo Bar"
+        string = string.replace(/_/g, " ").replace(/([A-Z])/g, " $1");
+        // Trim whitespace
+        string = string.replace(/(^\s+)/, "").replace(/(\s+$)/, "");
+        // Split words by whitespace, uppercase the first letter, join with a space
+        string = string.split(/\s+/).map(_ucFirst).join(" ");
+
+        return string;
+    }
+
     function _getOriginFromCommandId(cmdID) {
         // According to CommandManager.register() documentation:
         //  Core commands in Brackets use a simple command title as an id, for example "open.file".
         //  Extensions should use the following format: "author.myextension.mycommandname". 
         //  For example, "lschmitt.csswizard.format.css".
         var idArray = cmdID.split(".");
-        if (idArray.length !== 2) {
-            // not 2 qualifiers
+        if (idArray.length > 2) {
+            // more than two qualifiers
+            return origExtension + " (" + _humanizeString(idArray[1]) + ")";
+        }
+        else if (idArray.length < 2) {
+            // less than two qualifiers
             return origExtension;
         }
 
