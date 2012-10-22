@@ -159,7 +159,7 @@ define(function (require, exports, module) {
             if (cmKeymap) {
                 for (i in cmKeymap) {
                     // Note that we only ignore CodeMirror duplicates, but
-                    // we want to see Brackets & Extensions duplcates
+                    // we want to see Brackets & Extensions duplicates
                     if (cmKeymap.hasOwnProperty(i) &&
                             (i !== "fallthrough") &&
                             (_findKeyBinding(keyList, i) === -1)) {
