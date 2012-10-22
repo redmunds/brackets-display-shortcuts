@@ -48,8 +48,9 @@ define(function (require, exports, module) {
 
     var sortByBase = 1,
         sortByBinding = 2,
-        sortByCmd = 3,
-        sortByOrig = 4,
+        sortByCmdId = 3,
+        sortByCmdName = 4,
+        sortByOrig = 5,
         sortColumn = sortByBase,
         sortAscending = true;
 
@@ -59,7 +60,8 @@ define(function (require, exports, module) {
 
     var $headerBase,
         $headerBinding,
-        $headerCmd,
+        $headerCmdId,
+        $headerCmdName,
         $headerOrig;
 
     // Determine base key by stripping modifier keys
@@ -131,6 +133,7 @@ define(function (require, exports, module) {
     function _getkeyList() {
         var i,
             base,
+            command,
             key;
 
         // Brackets keymap
@@ -141,10 +144,12 @@ define(function (require, exports, module) {
                     key = bracketsKeymap[i];
                     if (key) {
                         base = _getBaseKey(i);
+                        command = CommandManager.get(key.commandID);
                         keyList.push({
                             keyBase: base,
                             keyBinding: i,
                             commandID: key.commandID,
+                            commandName: command.getName(),
                             origin: _getOriginFromCommandId(key.commandID)
                         });
                     }
@@ -168,6 +173,7 @@ define(function (require, exports, module) {
                             keyBase: base,
                             keyBinding: i,
                             commandID: cmKeymap[i],
+                            commandName: cmKeymap[i],
                             origin: origCodeMirror
                         });
                     }
@@ -185,6 +191,10 @@ define(function (require, exports, module) {
             return (sortAscending ? 1 : -1);
         }
         return 0;
+    }
+
+    function _stricmp(a, b) {
+        return _strcmp(a.toLowerCase(), b.toLowerCase());
     }
 
     function _keyBaseSort(a, b) {
@@ -205,8 +215,12 @@ define(function (require, exports, module) {
         return _strcmp(a.keyBinding, b.keyBinding);
     }
 
-    function _keyCmdSort(a, b) {
-        return _strcmp(a.commandID, b.commandID);
+    function _keyCmdIdSort(a, b) {
+        return _stricmp(a.commandID, b.commandID);
+    }
+
+    function _keyCmdNameSort(a, b) {
+        return _strcmp(a.commandName, b.commandName);
     }
 
     function _keyOrigSort(a, b) {
@@ -216,8 +230,10 @@ define(function (require, exports, module) {
     function _getSortFunc() {
         if (sortColumn === sortByBinding) {
             return _keyBindingSort;
-        } else if (sortColumn === sortByCmd) {
-            return _keyCmdSort;
+        } else if (sortColumn === sortByCmdId) {
+            return _keyCmdIdSort;
+        } else if (sortColumn === sortByCmdName) {
+            return _keyCmdNameSort;
         } else if (sortColumn === sortByOrig) {
             return _keyOrigSort;
         }
@@ -256,7 +272,8 @@ define(function (require, exports, module) {
         var $header     = $shortcuts.find(".shortcut-header");
         $headerBase     = $header.find(".shortcut-base a");
         $headerBinding  = $header.find(".shortcut-binding a");
-        $headerCmd      = $header.find(".shortcut-cmd a");
+        $headerCmdId    = $header.find(".shortcut-cmd-id a");
+        $headerCmdName  = $header.find(".shortcut-cmd-name a");
         $headerOrig     = $header.find(".shortcut-orig a");
 
         $headerBase.on("click", function () {
@@ -265,8 +282,11 @@ define(function (require, exports, module) {
         $headerBinding.on("click", function () {
             _changeSorting(sortByBinding);
         });
-        $headerCmd.on("click", function () {
-            _changeSorting(sortByCmd);
+        $headerCmdId.on("click", function () {
+            _changeSorting(sortByCmdId);
+        });
+        $headerCmdName.on("click", function () {
+            _changeSorting(sortByCmdName);
         });
         $headerOrig.on("click", function () {
             _changeSorting(sortByOrig);
