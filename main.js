@@ -112,8 +112,7 @@ define(function (require, exports, module) {
         if (idArray.length > 2) {
             // more than two qualifiers
             return origExtension + " (" + _humanizeString(idArray[1]) + ")";
-        }
-        else if (idArray.length < 2) {
+        } else if (idArray.length < 2) {
             // less than two qualifiers
             return origExtension;
         }
@@ -336,7 +335,6 @@ define(function (require, exports, module) {
 
     function init() {
         var $shortcutsPanel,
-            $shortcutsContent,
             prefs   = PreferencesManager.getPreferenceStorage(module.id, defaultPrefs),
             height  = prefs.getValue("height"),
             s,
@@ -358,7 +356,6 @@ define(function (require, exports, module) {
         $(".content").append(s);
 
         $shortcutsPanel = $("#shortcuts");
-        $shortcutsContent = $shortcutsPanel.find(".resizable-content");
         $shortcutsPanel.hide();
 
         $shortcutsPanel.find(".copy-table").click(function () {
@@ -369,16 +366,9 @@ define(function (require, exports, module) {
             CommandManager.execute(TOGGLE_SHORTCUTS_ID);
         });
 
-        $shortcutsPanel.height(height);
-        $shortcutsContent.height(height - HEADER_HEIGHT);
-        
-        $shortcutsPanel.on("panelResizeEnd", function (event, height) {
-            prefs.setValue("height", height);
-        });
-
         // AppInit.htmlReady() has already executed before extensions are loaded
         // so, for now, we need to call this ourself
-        Resizer.makeResizable($shortcutsPanel.get(0), "vert", "top", 100);
+        Resizer.makeResizable($shortcutsPanel.get(0), "vert", "top", 100, false);
     }
 
     init();
