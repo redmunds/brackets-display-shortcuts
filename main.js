@@ -112,8 +112,7 @@ define(function (require, exports, module) {
         if (idArray.length > 2) {
             // more than two qualifiers
             return origExtension + " (" + _humanizeString(idArray[1]) + ")";
-        }
-        else if (idArray.length < 2) {
+        } else if (idArray.length < 2) {
             // less than two qualifiers
             return origExtension;
         }
@@ -317,7 +316,6 @@ define(function (require, exports, module) {
 
     function _copyTableToCurrentDoc() {
 
-//        var editor = EditorManager.getFocusedEditor();
         var editor = EditorManager.getCurrentFullEditor();
         if (!editor) {
             return;
@@ -350,7 +348,7 @@ define(function (require, exports, module) {
         // Add command to View menu, if it exists
         view_menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
         if (view_menu) {
-            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID, "", Menus.AFTER, "menu-view-sidebar");
+            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID);
         }
 
         // Add the HTML UI
