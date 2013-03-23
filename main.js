@@ -335,7 +335,7 @@ define(function (require, exports, module) {
     function init() {
         var $shortcutsPanel,
             $shortcutsContent,
-            prefs   = PreferencesManager.getPreferenceStorage(module.id, defaultPrefs),
+            prefs   = PreferencesManager.getPreferenceStorage(module, defaultPrefs),
             height  = prefs.getValue("height"),
             s,
             view_menu;
