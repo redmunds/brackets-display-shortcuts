@@ -35,16 +35,15 @@ define(function (require, exports, module) {
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Menus               = brackets.getModule("command/Menus"),
-        PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
-        Resizer             = brackets.getModule("utils/Resizer");
+        PanelManager        = brackets.getModule("view/PanelManager"),
+        PreferencesManager  = brackets.getModule("preferences/PreferencesManager");
 
     var panelHtml           = require("text!templates/bottom-panel.html"),
         shortcutsHtml       = require("text!templates/shortcut-table.html"),
         TOGGLE_SHORTCUTS_ID = "redmunds.show-shortcuts.view.shortcuts",
         keyList = [],
         loaded = false,
-        HEADER_HEIGHT = 27,
-        defaultPrefs = { height: 200 };
+        panel;
 
     var sortByBase = 1,
         sortByBinding = 2,
@@ -293,10 +292,14 @@ define(function (require, exports, module) {
     }
 
     function _handleShowHideShortcuts() {
-        var $shortcuts = $("#shortcuts");
-        
-        if ($shortcuts.css("display") === "none") {
-            $shortcuts.show();
+        if (panel.isVisible()) {
+            // This panel probably won't get opened very often, so only maintain data
+            // while panel is open (for faster sorting) and discard when closed.
+            keyList = [];
+            panel.hide();
+            CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(false);
+        } else {
+            panel.show();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(true);
 
             // Only get data once while panel is open
@@ -304,12 +307,6 @@ define(function (require, exports, module) {
                 keyList = _getkeyList();
             }
             _showShortcuts();
-        } else {
-            // This panel probably won't get opened very often, so only maintain data
-            // while panel is open (for faster sorting) and discard when closed.
-            keyList = [];
-            $shortcuts.hide();
-            CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(false);
         }
         EditorManager.resizeEditor();
     }
@@ -335,16 +332,14 @@ define(function (require, exports, module) {
     function init() {
         var $shortcutsPanel,
             $shortcutsContent,
-            prefs   = PreferencesManager.getPreferenceStorage(module, defaultPrefs),
-            height  = prefs.getValue("height"),
             s,
             view_menu;
-        
+
         ExtensionUtils.loadStyleSheet(module, "shortcuts.css");
 
         // Register function as command
         CommandManager.register("Show Shortcuts", TOGGLE_SHORTCUTS_ID, _handleShowHideShortcuts);
-        
+
         // Add command to View menu, if it exists
         view_menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
         if (view_menu) {
@@ -353,11 +348,14 @@ define(function (require, exports, module) {
 
         // Add the HTML UI
         s = Mustache.render(panelHtml);
-        $(".content").append(s);
+
+        // AppInit.htmlReady() has already executed before extensions are loaded
+        // so, for now, we need to call this ourself
+        panel = PanelManager.createBottomPanel(TOGGLE_SHORTCUTS_ID, $(s), 100);
+        panel.hide();
 
         $shortcutsPanel = $("#shortcuts");
         $shortcutsContent = $shortcutsPanel.find(".resizable-content");
-        $shortcutsPanel.hide();
 
         $shortcutsPanel.find(".copy-table").click(function () {
             _copyTableToCurrentDoc();
@@ -366,17 +364,6 @@ define(function (require, exports, module) {
         $shortcutsPanel.find(".shortcuts-close").click(function () {
             CommandManager.execute(TOGGLE_SHORTCUTS_ID);
         });
-
-        $shortcutsPanel.height(height);
-        $shortcutsContent.height(height - HEADER_HEIGHT);
-        
-        $shortcutsPanel.on("panelResizeEnd", function (event, height) {
-            prefs.setValue("height", height);
-        });
-
-        // AppInit.htmlReady() has already executed before extensions are loaded
-        // so, for now, we need to call this ourself
-        Resizer.makeResizable($shortcutsPanel.get(0), "vert", "top", 100);
     }
 
     init();
