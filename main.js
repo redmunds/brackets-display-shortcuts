@@ -43,7 +43,8 @@ define(function (require, exports, module) {
         TOGGLE_SHORTCUTS_ID = "redmunds.show-shortcuts.view.shortcuts",
         keyList = [],
         loaded = false,
-        panel;
+        panel,
+        togglePanelShortcut = "Ctrl-Shift-/";
 
     var sortByBase = 1,
         sortByBinding = 2,
@@ -343,7 +344,7 @@ define(function (require, exports, module) {
         // Add command to View menu, if it exists
         view_menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
         if (view_menu) {
-            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID);
+            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID, togglePanelShortcut);
         }
 
         // Add the HTML UI
