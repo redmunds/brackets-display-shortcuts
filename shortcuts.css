@@ -51,19 +51,6 @@
     display: block;
 }
 
-#shortcuts .toolbar .shortcuts-close {
-    font-weight: bold;
-    font-height: 20px;
-    color: #999;
-    float: right;
-    margin-right: 5px;
-}
-
-#shortcuts .toolbar .shortcuts-close:hover {
-    text-decoration: none;
-    color: #000;
-}
-
 #shortcuts .toolbar button.copy-table,
 #shortcuts .toolbar .filter {
     float: right;
