@@ -42,9 +42,12 @@ define(function (require, exports, module) {
         shortcutsHtml       = require("text!templates/shortcut-table.html"),
         TOGGLE_SHORTCUTS_ID = "redmunds.show-shortcuts.view.shortcuts",
         keyList = [],
+        keyListForFilter = [],
         loaded = false,
         panel,
-        togglePanelShortcut = "Ctrl-Shift-/";
+        togglePanelShortcut = "Ctrl-Shift-/",
+        $filterField,
+        currentFilter;
 
     var sortByBase = 1,
         sortByBinding = 2,
@@ -133,7 +136,8 @@ define(function (require, exports, module) {
         var i,
             base,
             command,
-            key;
+            key,
+            id;
 
         // Brackets keymap
         var bracketsKeymap = KeyBindingManager.getKeymap();
@@ -142,14 +146,20 @@ define(function (require, exports, module) {
                 if (bracketsKeymap.hasOwnProperty(i)) {
                     key = bracketsKeymap[i];
                     if (key) {
+                        id = "shortcuts-" + key.commandID.replace(/\./g, "");
                         base = _getBaseKey(i);
                         command = CommandManager.get(key.commandID);
                         keyList.push({
+                            id: id,
                             keyBase: base,
                             keyBinding: i,
                             commandID: key.commandID,
                             commandName: command.getName(),
                             origin: _getOriginFromCommandId(key.commandID)
+                        });
+                        keyListForFilter.push({
+                            id: id,
+                            string: command.getName().toLowerCase()
                         });
                     }
                 }
@@ -168,12 +178,18 @@ define(function (require, exports, module) {
                             (i !== "fallthrough") &&
                             (_findKeyBinding(keyList, i) === -1)) {
                         base = _getBaseKey(i);
+                        id = "shortcuts-" + cmKeymap[i].replace(/\./g, "");
                         keyList.push({
+                            id: id,
                             keyBase: base,
                             keyBinding: i,
                             commandID: cmKeymap[i],
                             commandName: cmKeymap[i],
                             origin: origCodeMirror
+                        });
+                        keyListForFilter.push({
+                            id: id,
+                            string: cmKeymap[i].toLowerCase()
                         });
                     }
                 }
@@ -258,14 +274,37 @@ define(function (require, exports, module) {
         _showShortcuts();
     }
 
+    function _filterShortcuts(forceFiltering) {
+        var terms = $filterField.val().trim().toLocaleLowerCase();
+        if (forceFiltering || terms !== currentFilter) {
+            currentFilter = terms;
+            if (terms === "") {
+                $("#shortcuts .resizable-content").removeClass("filtered");
+                $("#shortcuts .resizable-content tr").show();
+            } else {
+                $("#shortcuts .resizable-content").addClass("filtered");
+                terms = terms.split(/\s+?/);
+                $.each(keyListForFilter, function (i, shortcut) {
+                    var match;
+                    $.each(terms, function (i, term) {
+                        if (match !== false) {
+                            match = shortcut.string.indexOf(term) > -1;
+                        }
+                    });
+                    $("#" + shortcut.id)[match ? "addClass" : "removeClass"]("filter-match");
+                });
+            }
+        }
+    }
+
     function _showShortcuts() {
         var $shortcuts = $("#shortcuts");
 
-        // If we're sorting, then we need to remove old markup
-        $shortcuts.find(".resizable-content *").remove();
-
         // Add new markup
-        $shortcuts.find(".resizable-content").append(_getShortcutsHtml());
+        $shortcuts.find(".resizable-content").html(_getShortcutsHtml());
+
+        // Apply any active filter again after replacing markup
+        _filterShortcuts(true);
 
         // Setup header sort buttons
         var $header     = $shortcuts.find(".shortcut-header");
@@ -302,6 +341,7 @@ define(function (require, exports, module) {
         } else {
             panel.show();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(true);
+            $filterField.val("").focus();
 
             // Only get data once while panel is open
             if (keyList.length === 0) {
@@ -365,6 +405,9 @@ define(function (require, exports, module) {
         $shortcutsPanel.find(".shortcuts-close").click(function () {
             CommandManager.execute(TOGGLE_SHORTCUTS_ID);
         });
+
+        $filterField = $shortcutsPanel.find(".toolbar .filter");
+        $filterField.on("keyup", _filterShortcuts);
     }
 
     init();
