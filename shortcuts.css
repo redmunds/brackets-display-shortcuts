@@ -1,7 +1,12 @@
 /* All selectors are descendents of #shortcuts to constrain styles to this extension */
 #shortcuts .resizable-content {
     height: 175px;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: scroll;
+}
+
+#shortcuts .resizable-content table {
+    width: 100%;
 }
 
 #shortcuts .resizable-content.filtered tbody tr {
@@ -16,6 +21,12 @@
     line-height: 14px;
     padding: 4px 10px;
 }
+
+.shortcut-base { width: 9%; }
+.shortcut-binding { width: 12%; }
+.shortcut-cmd-id { width: 30%; }
+.shortcut-cmd-name { width: 27%; }
+.shortcut-orig { width: 22%; }
 
 #shortcuts table .shortcut-header td {
     font-weight: bold;
