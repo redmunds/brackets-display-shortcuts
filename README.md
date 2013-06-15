@@ -9,7 +9,7 @@ This is an Extension for [Brackets](https://github.com/adobe/brackets).
 
 ## Features
 
-This extension is accessed in Brackets using menu View > Display Shortcuts
+This extension is accessed in Brackets using menu Help > Display Shortcuts
 
 This extension displays all shortcuts defined for:
 * Brackets

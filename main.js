@@ -178,7 +178,7 @@ define(function (require, exports, module) {
                 }
             }
         }
-        
+
         return keyList;
     }
 
@@ -252,7 +252,7 @@ define(function (require, exports, module) {
             // New sort column
             sortColumn = newSortColumn;
         }
-        
+
         // Update page
         _showShortcuts();
     }
@@ -322,7 +322,7 @@ define(function (require, exports, module) {
         if (!instance) {
             return;
         }
-        
+
         var start = instance.getCursor(true),
             end   = instance.getCursor(false);
 
@@ -333,18 +333,15 @@ define(function (require, exports, module) {
         var $shortcutsPanel,
             $shortcutsContent,
             s,
-            view_menu;
+            help_menu;
 
         ExtensionUtils.loadStyleSheet(module, "shortcuts.css");
 
         // Register function as command
         CommandManager.register("Show Shortcuts", TOGGLE_SHORTCUTS_ID, _handleShowHideShortcuts);
 
-        // Add command to View menu, if it exists
-        view_menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
-        if (view_menu) {
-            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID);
-        }
+        // Add command to View menu
+        help_menu = Menus.getMenu(Menus.AppMenuBar.HELP_MENU).addMenuItem(TOGGLE_SHORTCUTS_ID);
 
         // Add the HTML UI
         s = Mustache.render(panelHtml);
