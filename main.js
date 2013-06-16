@@ -129,8 +129,7 @@ define(function (require, exports, module) {
         var i,
             base,
             command,
-            key,
-            id;
+            key;
 
         // Brackets keymap
         var bracketsKeymap = KeyBindingManager.getKeymap();
@@ -139,11 +138,9 @@ define(function (require, exports, module) {
                 if (bracketsKeymap.hasOwnProperty(i)) {
                     key = bracketsKeymap[i];
                     if (key) {
-                        id = "shortcuts-" + key.commandID.replace(/\./g, "");
                         base = _getBaseKey(i);
                         command = CommandManager.get(key.commandID);
                         keyList.push({
-                            id: id,
                             keyBase: base,
                             keyBinding: i,
                             commandID: key.commandID,
@@ -168,9 +165,7 @@ define(function (require, exports, module) {
                             (i !== "fallthrough") &&
                             (_findKeyBinding(keyList, i) === -1)) {
                         base = _getBaseKey(i);
-                        id = "shortcuts-" + cmKeymap[i].replace(/\./g, "");
                         keyList.push({
-                            id: id,
                             keyBase: base,
                             keyBinding: i,
                             commandID: cmKeymap[i],
