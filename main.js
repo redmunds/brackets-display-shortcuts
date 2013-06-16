@@ -61,12 +61,6 @@ define(function (require, exports, module) {
         origCodeMirror = "CodeMirror",
         origExtension = "Extension";
 
-    var $headerBase,
-        $headerBinding,
-        $headerCmdId,
-        $headerCmdName,
-        $headerOrig;
-
     // Determine base key by stripping modifier keys
     function _getBaseKey(keyBinding) {
         var keyBase = keyBinding
@@ -302,31 +296,25 @@ define(function (require, exports, module) {
 
         // Add new markup
         $shortcuts.find(".resizable-content").html(_getShortcutsHtml());
+        $shortcuts.find("thead th").eq(sortColumn - 1).addClass('sort-' + (sortAscending ? 'ascending' : 'descending'));
 
         // Apply any active filter again after replacing markup
         _filterShortcuts(true);
 
         // Setup header sort buttons
-        var $header     = $shortcuts.find(".shortcut-header");
-        $headerBase     = $header.find(".shortcut-base a");
-        $headerBinding  = $header.find(".shortcut-binding a");
-        $headerCmdId    = $header.find(".shortcut-cmd-id a");
-        $headerCmdName  = $header.find(".shortcut-cmd-name a");
-        $headerOrig     = $header.find(".shortcut-orig a");
-
-        $headerBase.on("click", function () {
+        $("thead .shortcut-base a", $shortcuts).on("click", function () {
             _changeSorting(sortByBase);
         });
-        $headerBinding.on("click", function () {
+        $("thead .shortcut-binding a", $shortcuts).on("click", function () {
             _changeSorting(sortByBinding);
         });
-        $headerCmdId.on("click", function () {
+        $("thead .shortcut-cmd-id a", $shortcuts).on("click", function () {
             _changeSorting(sortByCmdId);
         });
-        $headerCmdName.on("click", function () {
+        $("thead .shortcut-cmd-name a", $shortcuts).on("click", function () {
             _changeSorting(sortByCmdName);
         });
-        $headerOrig.on("click", function () {
+        $("thead .shortcut-orig a", $shortcuts).on("click", function () {
             _changeSorting(sortByOrig);
         });
     }

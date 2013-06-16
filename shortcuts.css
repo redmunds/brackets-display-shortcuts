@@ -22,29 +22,47 @@
     padding: 4px 10px;
 }
 
-.shortcut-base { width: 9%; }
-.shortcut-binding { width: 12%; }
-.shortcut-cmd-id { width: 30%; }
-.shortcut-cmd-name { width: 27%; }
-.shortcut-orig { width: 22%; }
+#shortcuts .shortcut-base { width: 9%; }
+#shortcuts .shortcut-binding { width: 12%; }
+#shortcuts .shortcut-cmd-id { width: 30%; }
+#shortcuts .shortcut-cmd-name { width: 27%; }
+#shortcuts .shortcut-orig { width: 22%; }
 
-#shortcuts table .shortcut-header td {
+#shortcuts thead th {
+    position: relative;
     font-weight: bold;
-    background-color: #404040;
+    background-color: #c2c7c7;
     padding: 0;
+    text-align: left;
 }
 
-#shortcuts table .shortcut-header td a {
+#shortcuts thead th:before {
+    content: '.';
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    margin-top: -3px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
+
+#shortcuts thead th.sort-ascending:before {
+    border-top: 6px solid;
+}
+
+#shortcuts thead th.sort-descending:before {
+    border-bottom: 6px solid;
+}
+
+#shortcuts thead a {
     display: block;
-    color: #fff;
+    color: inherit;
     padding: 4px 10px;
     text-decoration: none;
-    -webkit-transition: background-color 400ms ease-out 0ms;
-}
-
-#shortcuts table .shortcut-header td a:hover {
     cursor: pointer;
-    background-color: #808080;
 }
 
 #shortcuts .toolbar {
