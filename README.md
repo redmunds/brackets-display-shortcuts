@@ -9,7 +9,7 @@ This is an Extension for [Brackets](https://github.com/adobe/brackets).
 
 ## Features
 
-This extension is accessed in Brackets using menu View > Display Shortcuts
+This extension is accessed in Brackets using menu `View > Display Shortcuts` or with the keyboard shortcut `Ctrl-Shift-/` on Window and `Cmd-Shift-/` on Mac.
 
 This extension displays all shortcuts defined for:
 * Brackets
@@ -22,7 +22,7 @@ Display of "Extension" in Origin column is dependent on command using proper nam
 
 Button to "Copy to Current Document" inserts Table HTML markup at the current selection. It only works for full editor.
 
-
+Type the name of the command you're looking for in the filter field to find the shortcut faster.
 
 ## License
 
