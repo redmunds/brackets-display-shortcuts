@@ -324,8 +324,10 @@ define(function (require, exports, module) {
             // This panel probably won't get opened very often, so only maintain data
             // while panel is open (for faster sorting) and discard when closed.
             keyList = [];
+            keyListForFilter = [];
             panel.hide();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(false);
+            EditorManager.focusEditor();
         } else {
             panel.show();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(true);
