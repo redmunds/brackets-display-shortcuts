@@ -42,7 +42,6 @@ define(function (require, exports, module) {
         shortcutsHtml       = require("text!templates/shortcut-table.html"),
         TOGGLE_SHORTCUTS_ID = "redmunds.show-shortcuts.view.shortcuts",
         keyList = [],
-        keyListForFilter = [],
         loaded = false,
         panel,
         togglePanelShortcut = "Ctrl-Shift-/",
@@ -149,11 +148,8 @@ define(function (require, exports, module) {
                             keyBinding: i,
                             commandID: key.commandID,
                             commandName: command.getName(),
-                            origin: _getOriginFromCommandId(key.commandID)
-                        });
-                        keyListForFilter.push({
-                            id: id,
-                            string: command.getName().toLowerCase()
+                            origin: _getOriginFromCommandId(key.commandID),
+                            filter: command.getName().toLowerCase()
                         });
                     }
                 }
@@ -179,11 +175,8 @@ define(function (require, exports, module) {
                             keyBinding: i,
                             commandID: cmKeymap[i],
                             commandName: cmKeymap[i],
-                            origin: origCodeMirror
-                        });
-                        keyListForFilter.push({
-                            id: id,
-                            string: cmKeymap[i].toLowerCase()
+                            origin: origCodeMirror,
+                            filter: cmKeymap[i].toLowerCase()
                         });
                     }
                 }
@@ -272,34 +265,32 @@ define(function (require, exports, module) {
         var terms = $filterField.val().trim().toLocaleLowerCase();
         if (forceFiltering || terms !== currentFilter) {
             currentFilter = terms;
-            if (terms === "") {
-                $("#shortcuts .resizable-content").removeClass("filtered");
-                $("#shortcuts .resizable-content tr").show();
-            } else {
-                $("#shortcuts .resizable-content").addClass("filtered");
-                terms = terms.split(/\s+?/);
-                $.each(keyListForFilter, function (i, shortcut) {
-                    var match;
+            terms = terms.split(/\s+?/);
+            $.each(keyList, function (i, key) {
+                var match;
+                if (terms === "") {
+                    match = true;
+                } else {
                     $.each(terms, function (i, term) {
                         if (match !== false) {
-                            match = shortcut.string.indexOf(term) > -1;
+                            match = key.filter.indexOf(term) > -1;
                         }
                     });
-                    $("#" + shortcut.id)[match ? "addClass" : "removeClass"]("filter-match");
-                });
-            }
+                }
+                key.filterMatch = match;
+            });
         }
     }
 
     function _showShortcuts() {
         var $shortcuts = $("#shortcuts");
+        
+        // Apply any active filter
+        _filterShortcuts(true);
 
         // Add new markup
         $shortcuts.find(".resizable-content").html(_getShortcutsHtml());
         $shortcuts.find("thead th").eq(sortColumn - 1).addClass('sort-' + (sortAscending ? 'ascending' : 'descending'));
-
-        // Apply any active filter again after replacing markup
-        _filterShortcuts(true);
 
         // Setup header sort buttons
         $("thead .shortcut-base a", $shortcuts).on("click", function () {
@@ -324,7 +315,6 @@ define(function (require, exports, module) {
             // This panel probably won't get opened very often, so only maintain data
             // while panel is open (for faster sorting) and discard when closed.
             keyList = [];
-            keyListForFilter = [];
             panel.hide();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(false);
             EditorManager.focusEditor();
@@ -397,7 +387,7 @@ define(function (require, exports, module) {
         });
 
         $filterField = $shortcutsPanel.find(".toolbar .filter");
-        $filterField.on("keyup", _filterShortcuts);
+        $filterField.on("keyup", _showShortcuts);
     }
 
     init();

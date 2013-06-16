@@ -10,13 +10,15 @@
     </thead>
     <tbody>
         {{#keyList}}
-        <tr id="{{ id }}">
-            <td class="shortcut-base">{{keyBase}}</td>
-            <td class="shortcut-binding">{{keyBinding}}</td>
-            <td class="shortcut-cmd-id">{{commandID}}</td>
-            <td class="shortcut-cmd-name">{{commandName}}</td>
-            <td class="shortcut-orig">{{origin}}</td>
-        </tr>
+            {{#filterMatch}}
+                <tr>
+                    <td class="shortcut-base">{{keyBase}}</td>
+                    <td class="shortcut-binding">{{keyBinding}}</td>
+                    <td class="shortcut-cmd-id">{{commandID}}</td>
+                    <td class="shortcut-cmd-name">{{commandName}}</td>
+                    <td class="shortcut-orig">{{origin}}</td>
+                </tr>
+            {{/filterMatch}}
         {{/keyList}}
     </tbody>
 </table>

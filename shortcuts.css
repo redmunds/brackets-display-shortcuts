@@ -5,18 +5,6 @@
     overflow-y: scroll;
 }
 
-#shortcuts .resizable-content table {
-    width: 100%;
-}
-
-#shortcuts .resizable-content.filtered tbody tr {
-    display: none;
-}
-
-#shortcuts .resizable-content.filtered tbody tr.filter-match {
-    display: table-row;
-}
-
 #shortcuts table td {
     line-height: 14px;
     padding: 4px 10px;
@@ -30,10 +18,8 @@
 
 #shortcuts thead th {
     position: relative;
-    font-weight: bold;
     background-color: #c2c7c7;
     padding: 0;
-    text-align: left;
 }
 
 #shortcuts thead th:before {
