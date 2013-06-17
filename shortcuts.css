@@ -44,6 +44,7 @@
 }
 
 #shortcuts thead a {
+    position: relative;
     display: block;
     color: inherit;
     padding: 4px 10px;
