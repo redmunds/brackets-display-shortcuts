@@ -377,7 +377,7 @@ define(function (require, exports, module) {
             _copyTableToCurrentDoc();
         });
 
-        $shortcutsPanel.find(".shortcuts-close").click(function () {
+        $shortcutsPanel.find(".close").click(function () {
             CommandManager.execute(TOGGLE_SHORTCUTS_ID);
         });
 
