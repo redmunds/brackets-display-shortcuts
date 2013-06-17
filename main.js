@@ -44,7 +44,17 @@ define(function (require, exports, module) {
         keyList = [],
         loaded = false,
         panel,
-        togglePanelShortcut = "Ctrl-Shift-/",
+        togglePanelShortcut = [{
+            key: "Ctrl-Alt-/",
+            // Define platform to get around Brackets throwing error
+            // about key "Cmd-Alt-/" already being registered on mac.
+            platform: "win"
+        }, {
+            // Define key again explicitly for mac to prevent Brackets
+            // from converting Ctrl to Cmd.
+            key: "Ctrl-Alt-/",
+            platform: "mac"
+        }],
         $filterField,
         currentFilter;
 
