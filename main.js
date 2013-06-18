@@ -45,10 +45,9 @@ define(function (require, exports, module) {
         loaded = false,
         panel,
         togglePanelShortcut = [{
-            key: "Ctrl-Alt-/",
-            // Define platform to get around Brackets throwing error
+            // Note: Brackets will write error message to console
             // about key "Cmd-Alt-/" already being registered on mac.
-            platform: "win"
+            key: "Ctrl-Alt-/"
         }, {
             // Define key again explicitly for mac to prevent Brackets
             // from converting Ctrl to Cmd.
