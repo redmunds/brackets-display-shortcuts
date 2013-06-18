@@ -20,7 +20,7 @@
     color: #fff;
     padding: 4px 10px;
     text-decoration: none;
-    transition: background-color 400ms ease-out 0ms;
+    -webkit-transition: background-color 400ms ease-out 0ms;
 }
 
 #shortcuts table .shortcut-header td a:hover {
