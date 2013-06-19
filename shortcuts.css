@@ -1,7 +1,8 @@
 /* All selectors are descendents of #shortcuts to constrain styles to this extension */
 #shortcuts .resizable-content {
     height: 175px;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: scroll;
 }
 
 #shortcuts table td {
@@ -9,47 +10,62 @@
     padding: 4px 10px;
 }
 
-#shortcuts table .shortcut-header td {
-    font-weight: bold;
-    background-color: #404040;
+#shortcuts .shortcut-base { width: 9%; }
+#shortcuts .shortcut-binding { width: 12%; }
+#shortcuts .shortcut-cmd-id { width: 30%; }
+#shortcuts .shortcut-cmd-name { width: 27%; }
+#shortcuts .shortcut-orig { width: 22%; }
+
+#shortcuts thead th {
+    position: relative;
+    background-color: #c2c7c7;
     padding: 0;
 }
 
-#shortcuts table .shortcut-header td a {
-    display: block;
-    color: #fff;
-    padding: 4px 10px;
-    text-decoration: none;
-    -webkit-transition: background-color 400ms ease-out 0ms;
+#shortcuts thead th:before {
+    content: '.';
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    margin-top: -3px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
 }
 
-#shortcuts table .shortcut-header td a:hover {
+#shortcuts thead th.sort-ascending:before {
+    border-top: 6px solid;
+}
+
+#shortcuts thead th.sort-descending:before {
+    border-bottom: 6px solid;
+}
+
+#shortcuts thead a {
+    position: relative;
+    display: block;
+    color: inherit;
+    padding: 4px 10px;
+    text-decoration: none;
     cursor: pointer;
-    background-color: #808080;
+    -webkit-transition: background 200ms ease-out;
+}
+
+#shortcuts thead a:hover {
+    background: rgba(0, 0, 0, 0.08);
 }
 
 #shortcuts .toolbar {
     display: block;
+    padding-right: 28px;
 }
 
-#shortcuts .toolbar .shortcuts-close {
-    font-weight: bold;
-    font-height: 20px;
-    color: #999;
+#shortcuts .toolbar button.copy-table,
+#shortcuts .toolbar .filter {
     float: right;
-    margin-right: 5px;
-}
-
-#shortcuts .toolbar .shortcuts-close:hover {
-    text-decoration: none;
-    color: #000;
-}
-
-#shortcuts .toolbar button.copy-table {
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    float: right;
-    padding: 0 10px;
-    margin-right: 20px;
-    font-size: 90%;
+    margin: -2px 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }

@@ -43,7 +43,19 @@ define(function (require, exports, module) {
         TOGGLE_SHORTCUTS_ID = "redmunds.show-shortcuts.view.shortcuts",
         keyList = [],
         loaded = false,
-        panel;
+        panel,
+        togglePanelShortcut = [{
+            // Note: Brackets will write error message to console
+            // about key "Cmd-Alt-/" already being registered on mac.
+            key: "Ctrl-Alt-/"
+        }, {
+            // Define key again explicitly for mac to prevent Brackets
+            // from converting Ctrl to Cmd.
+            key: "Ctrl-Alt-/",
+            platform: "mac"
+        }],
+        $filterField,
+        currentFilter;
 
     var sortByBase = 1,
         sortByBinding = 2,
@@ -56,12 +68,6 @@ define(function (require, exports, module) {
     var origBrackets = "Brackets",
         origCodeMirror = "CodeMirror",
         origExtension = "Extension";
-
-    var $headerBase,
-        $headerBinding,
-        $headerCmdId,
-        $headerCmdName,
-        $headerOrig;
 
     // Determine base key by stripping modifier keys
     function _getBaseKey(keyBinding) {
@@ -148,7 +154,8 @@ define(function (require, exports, module) {
                             keyBinding: i,
                             commandID: key.commandID,
                             commandName: command.getName(),
-                            origin: _getOriginFromCommandId(key.commandID)
+                            origin: _getOriginFromCommandId(key.commandID),
+                            filter: command.getName().toLowerCase()
                         });
                     }
                 }
@@ -172,7 +179,8 @@ define(function (require, exports, module) {
                             keyBinding: i,
                             commandID: cmKeymap[i],
                             commandName: cmKeymap[i],
-                            origin: origCodeMirror
+                            origin: origCodeMirror,
+                            filter: cmKeymap[i].toLowerCase()
                         });
                     }
                 }
@@ -257,36 +265,51 @@ define(function (require, exports, module) {
         _showShortcuts();
     }
 
+    function _filterShortcuts(forceFiltering) {
+        var terms = $filterField.val().trim().toLocaleLowerCase();
+        if (forceFiltering || terms !== currentFilter) {
+            currentFilter = terms;
+            terms = terms.split(/\s+?/);
+            $.each(keyList, function (i, key) {
+                var match;
+                if (terms === "") {
+                    match = true;
+                } else {
+                    $.each(terms, function (i, term) {
+                        if (match !== false) {
+                            match = key.filter.indexOf(term) > -1;
+                        }
+                    });
+                }
+                key.filterMatch = match;
+            });
+        }
+    }
+
     function _showShortcuts() {
         var $shortcuts = $("#shortcuts");
-
-        // If we're sorting, then we need to remove old markup
-        $shortcuts.find(".resizable-content *").remove();
+        
+        // Apply any active filter
+        _filterShortcuts(true);
 
         // Add new markup
-        $shortcuts.find(".resizable-content").append(_getShortcutsHtml());
+        $shortcuts.find(".resizable-content").html(_getShortcutsHtml());
+        $shortcuts.find("thead th").eq(sortColumn - 1).addClass('sort-' + (sortAscending ? 'ascending' : 'descending'));
 
         // Setup header sort buttons
-        var $header     = $shortcuts.find(".shortcut-header");
-        $headerBase     = $header.find(".shortcut-base a");
-        $headerBinding  = $header.find(".shortcut-binding a");
-        $headerCmdId    = $header.find(".shortcut-cmd-id a");
-        $headerCmdName  = $header.find(".shortcut-cmd-name a");
-        $headerOrig     = $header.find(".shortcut-orig a");
-
-        $headerBase.on("click", function () {
+        $("thead .shortcut-base a", $shortcuts).on("click", function () {
             _changeSorting(sortByBase);
         });
-        $headerBinding.on("click", function () {
+        $("thead .shortcut-binding a", $shortcuts).on("click", function () {
             _changeSorting(sortByBinding);
         });
-        $headerCmdId.on("click", function () {
+        $("thead .shortcut-cmd-id a", $shortcuts).on("click", function () {
             _changeSorting(sortByCmdId);
         });
-        $headerCmdName.on("click", function () {
+        $("thead .shortcut-cmd-name a", $shortcuts).on("click", function () {
             _changeSorting(sortByCmdName);
         });
-        $headerOrig.on("click", function () {
+        $("thead .shortcut-orig a", $shortcuts).on("click", function () {
             _changeSorting(sortByOrig);
         });
     }
@@ -298,9 +321,11 @@ define(function (require, exports, module) {
             keyList = [];
             panel.hide();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(false);
+            EditorManager.focusEditor();
         } else {
             panel.show();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(true);
+            $filterField.val("").focus();
 
             // Only get data once while panel is open
             if (keyList.length === 0) {
@@ -343,7 +368,7 @@ define(function (require, exports, module) {
         // Add command to View menu, if it exists
         view_menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
         if (view_menu) {
-            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID);
+            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID, togglePanelShortcut);
         }
 
         // Add the HTML UI
@@ -361,9 +386,12 @@ define(function (require, exports, module) {
             _copyTableToCurrentDoc();
         });
 
-        $shortcutsPanel.find(".shortcuts-close").click(function () {
+        $shortcutsPanel.find(".close").click(function () {
             CommandManager.execute(TOGGLE_SHORTCUTS_ID);
         });
+
+        $filterField = $shortcutsPanel.find(".toolbar .filter");
+        $filterField.on("keyup", _showShortcuts);
     }
 
     init();
