@@ -358,17 +358,17 @@ define(function (require, exports, module) {
         var $shortcutsPanel,
             $shortcutsContent,
             s,
-            view_menu;
+            help_menu;
 
         ExtensionUtils.loadStyleSheet(module, "shortcuts.css");
 
         // Register function as command
         CommandManager.register("Show Shortcuts", TOGGLE_SHORTCUTS_ID, _handleShowHideShortcuts);
 
-        // Add command to View menu, if it exists
-        view_menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
-        if (view_menu) {
-            view_menu.addMenuItem(TOGGLE_SHORTCUTS_ID, togglePanelShortcut);
+        // Add command to Help menu, if it exists
+        help_menu = Menus.getMenu(Menus.AppMenuBar.HELP_MENU);
+        if (help_menu) {
+            help_menu.addMenuItem(TOGGLE_SHORTCUTS_ID, togglePanelShortcut);
         }
 
         // Add the HTML UI
