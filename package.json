@@ -1,7 +1,7 @@
 {
     "name": "brackets-display-shortcuts",
     "title": "Display Shortcuts",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Display a list of shortcuts in a bottom panel. Use 'View > Show Shortcuts' to toggle panel on and off. All columns are sortable by clicking on header.",
     "homepage": "https://github.com/redmunds/brackets-display-shortcuts",
     "author": "Randy Edmunds redmunds@adobe.com (https://github.com/redmunds)",
