@@ -340,9 +340,12 @@ define(function (require, exports, module) {
         // Register function as command
         CommandManager.register("Show Shortcuts", TOGGLE_SHORTCUTS_ID, _handleShowHideShortcuts);
 
-        // Add command to View menu
-        help_menu = Menus.getMenu(Menus.AppMenuBar.HELP_MENU).addMenuItem(TOGGLE_SHORTCUTS_ID);
-
+        // Add command to Help menu
+        help_menu = Menus.getMenu(Menus.AppMenuBar.HELP_MENU);
+        if (help_menu) {
+            help_menu.addMenuItem(TOGGLE_SHORTCUTS_ID);
+        }
+        
         // Add the HTML UI
         s = Mustache.render(panelHtml);
 
