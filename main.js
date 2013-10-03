@@ -152,7 +152,7 @@ define(function (require, exports, module) {
                         command = CommandManager.get(key.commandID);
                         keyList.push({
                             keyBase: base,
-                            keyBinding: i,
+                            keyBinding: KeyBindingManager.formatKeyDescriptor(i),
                             commandID: key.commandID,
                             commandName: command.getName(),
                             origin: _getOriginFromCommandId(key.commandID),
