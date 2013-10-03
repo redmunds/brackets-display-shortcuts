@@ -36,7 +36,8 @@ define(function (require, exports, module) {
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Menus               = brackets.getModule("command/Menus"),
         PanelManager        = brackets.getModule("view/PanelManager"),
-        PreferencesManager  = brackets.getModule("preferences/PreferencesManager");
+        PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
+        Strings             = require("strings");
 
     var panelHtml           = require("text!templates/bottom-panel.html"),
         shortcutsHtml       = require("text!templates/shortcut-table.html"),
@@ -67,7 +68,7 @@ define(function (require, exports, module) {
 
     var origBrackets = "Brackets",
         origCodeMirror = "CodeMirror",
-        origExtension = "Extension";
+        origExtension = Strings.ORIG_EXTENSION;
 
     // Determine base key by stripping modifier keys
     function _getBaseKey(keyBinding) {
@@ -249,6 +250,7 @@ define(function (require, exports, module) {
     function _getShortcutsHtml() {
         var msData = {};
         msData.keyList = keyList.sort(_getSortFunc());
+        msData.Strings = Strings;
         return Mustache.render(shortcutsHtml, msData);
     }
 
@@ -363,7 +365,7 @@ define(function (require, exports, module) {
         ExtensionUtils.loadStyleSheet(module, "shortcuts.css");
 
         // Register function as command
-        CommandManager.register("Show Shortcuts", TOGGLE_SHORTCUTS_ID, _handleShowHideShortcuts);
+        CommandManager.register(Strings.MENU_SHOW_SHORTCUTS, TOGGLE_SHORTCUTS_ID, _handleShowHideShortcuts);
 
         // Add command to Help menu, if it exists
         help_menu = Menus.getMenu(Menus.AppMenuBar.HELP_MENU);
@@ -372,7 +374,7 @@ define(function (require, exports, module) {
         }
 
         // Add the HTML UI
-        s = Mustache.render(panelHtml);
+        s = Mustache.render(panelHtml, Strings);
 
         // AppInit.htmlReady() has already executed before extensions are loaded
         // so, for now, we need to call this ourself
