@@ -151,7 +151,7 @@ define(function (require, exports, module) {
                         base = _getBaseKey(i);
                         command = CommandManager.get(key.commandID);
                         keyList.push({
-                            keyBase: base,
+                            keyBase: KeyBindingManager.formatKeyDescriptor(base),
                             keyBinding: KeyBindingManager.formatKeyDescriptor(i),
                             commandID: key.commandID,
                             commandName: command.getName(),
@@ -176,8 +176,8 @@ define(function (require, exports, module) {
                             (_findKeyBinding(keyList, i) === -1)) {
                         base = _getBaseKey(i);
                         keyList.push({
-                            keyBase: base,
-                            keyBinding: i,
+                            keyBase: KeyBindingManager.formatKeyDescriptor(base),
+                            keyBinding: KeyBindingManager.formatKeyDescriptor(i),
                             commandID: cmKeymap[i],
                             commandName: cmKeymap[i],
                             origin: origCodeMirror,
