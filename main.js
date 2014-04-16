@@ -36,7 +36,6 @@ define(function (require, exports, module) {
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Menus               = brackets.getModule("command/Menus"),
         PanelManager        = brackets.getModule("view/PanelManager"),
-        PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
         Strings             = require("strings");
 
     var panelHtml           = require("text!templates/bottom-panel.html"),
