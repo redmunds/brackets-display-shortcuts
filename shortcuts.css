@@ -45,6 +45,10 @@
     padding: 0;
 }
 
+.dark #shortcuts thead th {
+    background-color: #202020;
+}
+
 #shortcuts thead th:before {
     content: '.';
     position: absolute;
@@ -78,6 +82,10 @@
 
 #shortcuts thead a:hover {
     background: rgba(0, 0, 0, 0.08);
+}
+
+.dark #shortcuts thead a:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 #shortcuts .toolbar {
