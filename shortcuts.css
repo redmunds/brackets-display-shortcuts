@@ -77,7 +77,7 @@
     padding: 4px 10px;
     text-decoration: none;
     cursor: pointer;
-    -webkit-transition: background 200ms ease-out;
+    transition: background 200ms ease-out;
 }
 
 #shortcuts thead a:hover {
