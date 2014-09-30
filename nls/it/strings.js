@@ -30,7 +30,7 @@ define({
 
     //Table
     "TABLE_BASE_KEY": "Tasto di base",
-    "TABLE_KEY_BINDING": "Tasto aggiuntivo",
+    "TABLE_KEY_BINDING": "Combinazione tasti",
     "TABLE_COMMAND_ID": "ID comando",
     "TABLE_COMMAND_NAME": "Nome commando",
     "TABLE_ORIGIN": "Origine",
