@@ -29,10 +29,10 @@ define({
     "MENU_SHOW_SHORTCUTS": "Mostra scorciatoie",
 
     //Table
-    "TABLE_BASE_KEY": "Tasto di base",
+    "TABLE_BASE_KEY": "Tasto base",
     "TABLE_KEY_BINDING": "Combinazione tasti",
     "TABLE_COMMAND_ID": "ID comando",
-    "TABLE_COMMAND_NAME": "Nome commando",
+    "TABLE_COMMAND_NAME": "Nome comando",
     "TABLE_ORIGIN": "Origine",
 
     //Origins

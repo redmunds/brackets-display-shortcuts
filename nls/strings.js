@@ -39,7 +39,7 @@ define(function (require, exports, module) {
         root: true,
         de: true,
         es: true,
+        it: true,
         sv: true,
-        it: true
     };
 });
