@@ -40,6 +40,6 @@ define(function (require, exports, module) {
         de: true,
         es: true,
         it: true,
-        sv: true,
+        sv: true
     };
 });
