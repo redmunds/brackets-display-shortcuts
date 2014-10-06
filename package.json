@@ -1,7 +1,7 @@
 {
     "name": "brackets-display-shortcuts",
     "title": "Display Shortcuts",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Display current shortcuts in a bottom panel that can be sorted and filtered.",
     "homepage": "https://github.com/redmunds/brackets-display-shortcuts",
     "author": "Randy Edmunds (https://github.com/redmunds)",
@@ -14,6 +14,6 @@
         "brackets": ">=0.24.0"
     },
     "i18n": [
-        "de", "en", "es", "sv"
+        "de", "en", "es", "it", "sv"
     ]
 }
