@@ -34,7 +34,7 @@ define(function (require, exports, module) {
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Menus               = brackets.getModule("command/Menus"),
-        PanelManager        = brackets.getModule("view/PanelManager"),
+        WorkspaceManager    = brackets.getModule("view/WorkspaceManager"),
         Strings             = require("strings");
 
     var panelHtml           = require("text!templates/bottom-panel.html"),
@@ -376,7 +376,7 @@ define(function (require, exports, module) {
 
         // AppInit.htmlReady() has already executed before extensions are loaded
         // so, for now, we need to call this ourself
-        panel = PanelManager.createBottomPanel(TOGGLE_SHORTCUTS_ID, $(s), 100);
+        panel = WorkspaceManager.createBottomPanel(TOGGLE_SHORTCUTS_ID, $(s), 100);
         panel.hide();
 
         $shortcutsPanel = $("#shortcuts");
