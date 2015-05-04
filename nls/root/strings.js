@@ -28,6 +28,10 @@ define({
     //Menu
     "MENU_SHOW_SHORTCUTS"                       : "Show Shortcuts",
     
+    // Context Menu
+    "CMENU_OVERRIDE"                            : "Override Shortcut",
+    "CMENU_DISABLE"                             : "Disable Shortcut",
+    
     //Table
     "TABLE_BASE_KEY"                            : "Base Key",
     "TABLE_KEY_BINDING"                         : "Key Binding",

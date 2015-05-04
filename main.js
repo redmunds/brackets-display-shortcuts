@@ -23,23 +23,29 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, Mustache, CodeMirror, _showShortcuts */
+/*global define, brackets, $, Mustache, CodeMirror, _showShortcuts, window */
 
 define(function (require, exports, module) {
     "use strict";
     
     // Brackets modules
-    var CommandManager      = brackets.getModule("command/CommandManager"),
+    var Commands            = brackets.getModule("command/Commands"),
+        CommandManager      = brackets.getModule("command/CommandManager"),
+        DocumentManager     = brackets.getModule("document/DocumentManager"),
         EditorManager       = brackets.getModule("editor/EditorManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         Menus               = brackets.getModule("command/Menus"),
         WorkspaceManager    = brackets.getModule("view/WorkspaceManager"),
+        StringUtils         = brackets.getModule("utils/StringUtils"),
         Strings             = require("strings");
 
     var panelHtml           = require("text!templates/bottom-panel.html"),
         shortcutsHtml       = require("text!templates/shortcut-table.html"),
         TOGGLE_SHORTCUTS_ID = "redmunds.show-shortcuts.view.shortcuts",
+        OVERRIDE_SHORTCUT   = "redmunds-show-shortcuts.context.override",
+        DISABLE_SHORTCUT    = "redmunds-show-shortcuts.context.disable",
+        PANEL_MENU          = "shortcuts-panel-context-menu",
         keyList = [],
         loaded = false,
         panel,
@@ -54,7 +60,9 @@ define(function (require, exports, module) {
             platform: "mac"
         }],
         $filterField,
-        currentFilter;
+        currentFilter,
+        context_command_id,
+        context_keybinding;
 
     var sortByBase = 1,
         sortByBinding = 2,
@@ -150,7 +158,8 @@ define(function (require, exports, module) {
                         command = CommandManager.get(key.commandID);
                         keyList.push({
                             keyBase: KeyBindingManager.formatKeyDescriptor(base),
-                            keyBinding: KeyBindingManager.formatKeyDescriptor(i),
+                            keyBinding: i,
+                            keyBindingDisplay: KeyBindingManager.formatKeyDescriptor(i),
                             commandID: key.commandID,
                             commandName: command.getName(),
                             origin: _getOriginFromCommandId(key.commandID),
@@ -163,8 +172,7 @@ define(function (require, exports, module) {
 
         // CodeMirror keymap
         if (CodeMirror.keyMap) {
-            var cmKeymap = (brackets.platform === "mac")
-                ? CodeMirror.keyMap.macDefault : CodeMirror.keyMap.pcDefault;
+            var cmKeymap = (brackets.platform === "mac") ? CodeMirror.keyMap.macDefault : CodeMirror.keyMap.pcDefault;
             if (cmKeymap) {
                 for (i in cmKeymap) {
                     // Note that we only ignore CodeMirror duplicates, but
@@ -175,7 +183,8 @@ define(function (require, exports, module) {
                         base = _getBaseKey(i);
                         keyList.push({
                             keyBase: KeyBindingManager.formatKeyDescriptor(base),
-                            keyBinding: KeyBindingManager.formatKeyDescriptor(i),
+                            keyBinding: i,
+                            keyBindingDisplay: KeyBindingManager.formatKeyDescriptor(i),
                             commandID: cmKeymap[i],
                             commandName: cmKeymap[i],
                             origin: origCodeMirror,
@@ -336,6 +345,91 @@ define(function (require, exports, module) {
         EditorManager.resizeEditor();
     }
 
+    function _insertShortcutTemplate(contextCmd, doc) {
+        var startPos, endPos, match, currLine, remText, remLine, needComma, newText,
+            editor = doc._masterEditor,
+            lines = StringUtils.getLines(doc.getText());
+
+        // Data validation
+        if (!context_command_id || !context_keybinding) {
+            return;
+        }
+
+        // search for "overrides" section
+        for (currLine = 0; currLine < lines.length; currLine++) {
+            match = lines[currLine].match(/"overrides"\s*:\s*\{/);
+            if (match) {
+                break;
+            }
+        }
+        if (!match) {
+            return;
+        }
+        startPos = endPos = {
+            line: currLine,
+            ch: match.index + match[0].length
+        };
+
+        // determine if any other existing shortcut overrides
+        remText = lines[currLine].substr(startPos.ch);
+        for (remLine = currLine + 1; remLine < lines.length; remLine++) {
+            remText += lines[remLine];
+        }
+        needComma = !/^\s*\}/.test(remText);
+
+        // insert template for new shortcut
+        if (contextCmd === OVERRIDE_SHORTCUT) {
+            newText = '\n"[new-shortcut-here]": "' + context_command_id + '"';
+        } else {
+            newText = '\n"' + context_keybinding + '": null';
+        }
+        if (needComma) {
+            newText += ',';
+        }
+        doc.replaceRange(newText, startPos, endPos);
+
+        // indent line based on user settings
+        editor._codeMirror.indentLine(++currLine);
+
+        // select '[new-shortcut-here]' text
+        newText = doc.getLine(currLine);
+        match = newText.match(/\[new\-shortcut\-here\]/);
+        if (match) {
+            startPos = { line: currLine, ch: match.index };
+            endPos   = { line: currLine, ch: match.index + match[0].length };
+            editor.setSelection(startPos, endPos, true);
+        }
+        editor.focus();
+    }
+
+    function _handleUpdateShortcut(contextCmd) {
+        // Open shortcut override file
+        CommandManager.execute(Commands.FILE_OPEN_KEYMAP);
+
+        // KeyBindingManager._openUserKeyMap() does not return a Deferred object (see #11049),
+        // so the Deferred returned from CommandManager.execute(Commands.FILE_OPEN_KEYMAP)
+        // isn't what we want. For now poll until file opens.
+        var userKeyMapPath = brackets.app.getApplicationSupportDirectory() + "/keymap.json";
+        var waitForFileToOpen = function () {
+            var doc = DocumentManager.getOpenDocumentForPath(userKeyMapPath);
+            if (doc) {
+                _insertShortcutTemplate(contextCmd, doc);
+            } else {
+                window.setTimeout(waitForFileToOpen, 250);
+            }
+        };
+
+        waitForFileToOpen();
+    }
+
+    function _handleOverrideShortcut() {
+        _handleUpdateShortcut(OVERRIDE_SHORTCUT);
+    }
+
+    function _handleDisableShortcut() {
+        _handleUpdateShortcut(DISABLE_SHORTCUT);
+    }
+
     function _copyTableToCurrentDoc() {
 
         var editor = EditorManager.getCurrentFullEditor();
@@ -355,15 +449,14 @@ define(function (require, exports, module) {
     }
 
     function init() {
-        var $shortcutsPanel,
-            $shortcutsContent,
-            s,
-            help_menu;
+        var $shortcutsPanel, $shortcutsContent, s, help_menu, panel_cmenu;
 
         ExtensionUtils.loadStyleSheet(module, "shortcuts.css");
 
-        // Register function as command
+        // Register commands
         CommandManager.register(Strings.MENU_SHOW_SHORTCUTS, TOGGLE_SHORTCUTS_ID, _handleShowHideShortcuts);
+        CommandManager.register(Strings.CMENU_OVERRIDE, OVERRIDE_SHORTCUT, _handleOverrideShortcut);
+        CommandManager.register(Strings.CMENU_DISABLE,  DISABLE_SHORTCUT,  _handleDisableShortcut);
 
         // Add command to Help menu, if it exists
         help_menu = Menus.getMenu(Menus.AppMenuBar.HELP_MENU);
@@ -381,6 +474,24 @@ define(function (require, exports, module) {
 
         $shortcutsPanel = $("#shortcuts");
         $shortcutsContent = $shortcutsPanel.find(".resizable-content");
+
+        // Create context menu
+        panel_cmenu = Menus.registerContextMenu(PANEL_MENU);
+        panel_cmenu.addMenuItem(OVERRIDE_SHORTCUT);
+        panel_cmenu.addMenuItem(DISABLE_SHORTCUT);
+
+        // Events
+        $shortcutsPanel.on("contextmenu", function (e) {
+            var $rowEl = $(e.target).closest("tr");
+            if ($rowEl.length > 0) {
+                context_command_id = $rowEl[0].dataset.commandid;
+                context_keybinding = $rowEl[0].dataset.keybinding;
+                panel_cmenu.open(e);
+            } else {
+                context_command_id = null;
+                context_keybinding = null;
+            }
+        });
 
         $shortcutsPanel.find(".copy-table").click(function () {
             _copyTableToCurrentDoc();
