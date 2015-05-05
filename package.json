@@ -1,8 +1,8 @@
 {
     "name": "brackets-display-shortcuts",
     "title": "Display Shortcuts",
-    "version": "1.3.0",
-    "description": "Display current shortcuts in a bottom panel that can be sorted and filtered. Override and disable shortcuts from context menu.",
+    "version": "1.3.1",
+    "description": "Display current shortcuts in a bottom panel that can be sorted and filtered. Add and disable shortcuts from context menu.",
     "homepage": "https://github.com/redmunds/brackets-display-shortcuts",
     "author": "Randy Edmunds (https://github.com/redmunds)",
     "license": "MIT",

@@ -29,7 +29,7 @@ define({
     "MENU_SHOW_SHORTCUTS"                       : "Show Shortcuts",
     
     // Context Menu
-    "CMENU_OVERRIDE"                            : "Override Shortcut",
+    "CMENU_OVERRIDE"                            : "Add Shortcut for Command",
     "CMENU_DISABLE"                             : "Disable Shortcut",
     
     //Table
