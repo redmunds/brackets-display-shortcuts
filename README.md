@@ -24,7 +24,7 @@ Button to "Copy to Current Document" inserts Table HTML markup at the current se
 
 Type the name of the command you're looking for in the filter field to find the shortcut faster.
 
-Use *Override Shortcut* and *Disable Shortcuts* commands from context (right-click) menu to facilitate [editing of keymap.json file](https://github.com/adobe/brackets/wiki/User-Key-Bindings).
+Use *Add Shortcut for Command* and *Disable Shortcuts* commands from context (right-click) menu to facilitate [editing of keymap.json file](https://github.com/adobe/brackets/wiki/User-Key-Bindings).
 
 ## License
 
