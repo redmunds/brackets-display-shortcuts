@@ -29,7 +29,8 @@ define(function (require, exports, module) {
     "use strict";
     
     // Brackets modules
-    var Commands            = brackets.getModule("command/Commands"),
+    var _                   = brackets.getModule("thirdparty/lodash"),
+        Commands            = brackets.getModule("command/Commands"),
         CommandManager      = brackets.getModule("command/CommandManager"),
         DocumentManager     = brackets.getModule("document/DocumentManager"),
         EditorManager       = brackets.getModule("editor/EditorManager"),
@@ -62,7 +63,8 @@ define(function (require, exports, module) {
         $filterField,
         currentFilter,
         context_command_id,
-        context_keybinding;
+        context_keybinding,
+        _updateKeyBindings;
 
     var sortByBase = 1,
         sortByBinding = 2,
@@ -156,10 +158,15 @@ define(function (require, exports, module) {
                     if (key) {
                         base = _getBaseKey(i);
                         command = CommandManager.get(key.commandID);
+
+                        // Listen for keybinding changes
+                        command.on("keyBindingAdded.bds keyBindingRemoved.bds", _updateKeyBindings);
+
                         keyList.push({
                             keyBase: KeyBindingManager.formatKeyDescriptor(base),
                             keyBinding: i,
                             keyBindingDisplay: KeyBindingManager.formatKeyDescriptor(i),
+                            command: command,
                             commandID: key.commandID,
                             commandName: command.getName(),
                             origin: _getOriginFromCommandId(key.commandID),
@@ -295,17 +302,29 @@ define(function (require, exports, module) {
         }
     }
 
+    function _clearSortingEventHandlers() {
+        var $shortcuts = $("#shortcuts");
+        $("thead .shortcut-base a", $shortcuts).off("click");
+        $("thead .shortcut-binding a", $shortcuts).off("click");
+        $("thead .shortcut-cmd-id a", $shortcuts).off("click");
+        $("thead .shortcut-cmd-name a", $shortcuts).off("click");
+        $("thead .shortcut-orig a", $shortcuts).off("click");
+    }
+
     function _showShortcuts() {
         var $shortcuts = $("#shortcuts");
         
         // Apply any active filter
         _filterShortcuts(true);
 
+        // Clear old header sort button events
+        _clearSortingEventHandlers();
+
         // Add new markup
         $shortcuts.find(".resizable-content").html(_getShortcutsHtml());
         $shortcuts.find("thead th").eq(sortColumn - 1).addClass('sort-' + (sortAscending ? 'ascending' : 'descending'));
 
-        // Setup header sort buttons
+        // Setup header sort button events
         $("thead .shortcut-base a", $shortcuts).on("click", function () {
             _changeSorting(sortByBase);
         });
@@ -323,11 +342,40 @@ define(function (require, exports, module) {
         });
     }
 
+    function initKeyList() {
+        // Only get data once while panel is open
+        if (keyList.length === 0) {
+            keyList = _getkeyList();
+        }
+    }
+
+    function destroyKeyList() {
+        // cleanup listeners
+        $.each(keyList, function (i, key) {
+            // Only Brackets commands have listeners
+            if (key.command) {
+                key.command.off(".bds");
+            }
+        });
+
+        keyList = [];
+    }
+
+    _updateKeyBindings = _.debounce(function () {
+        // Update keylist
+        destroyKeyList();
+        initKeyList();
+
+        // Refresh panel
+        _showShortcuts();
+    }, 300);
+
     function _handleShowHideShortcuts() {
         if (panel.isVisible()) {
             // This panel probably won't get opened very often, so only maintain data
             // while panel is open (for faster sorting) and discard when closed.
-            keyList = [];
+            destroyKeyList();
+            _clearSortingEventHandlers();
             panel.hide();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(false);
             EditorManager.focusEditor();
@@ -335,11 +383,7 @@ define(function (require, exports, module) {
             panel.show();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(true);
             $filterField.val("").focus();
-
-            // Only get data once while panel is open
-            if (keyList.length === 0) {
-                keyList = _getkeyList();
-            }
+            initKeyList();
             _showShortcuts();
         }
         EditorManager.resizeEditor();
@@ -493,9 +537,7 @@ define(function (require, exports, module) {
             }
         });
 
-        $shortcutsPanel.find(".copy-table").click(function () {
-            _copyTableToCurrentDoc();
-        });
+        $shortcutsPanel.find(".copy-table").click(_copyTableToCurrentDoc());
 
         $shortcutsPanel.find(".close").click(function () {
             CommandManager.execute(TOGGLE_SHORTCUTS_ID);
