@@ -353,8 +353,8 @@ define(function (require, exports, module) {
         // cleanup listeners
         $.each(keyList, function (i, key) {
             // Only Brackets commands have listeners
-            if (i.command) {
-                i.command.off(".bds");
+            if (key.command) {
+                key.command.off(".bds");
             }
         });
 
