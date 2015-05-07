@@ -18,7 +18,7 @@ This extension displays all shortcuts defined for:
 
 All columns are sortable in both ascending and descending order.
 
-Display of "Extension" in Origin column is dependent on command using proper naming convention.
+Display of "Extension" in Origin column is dependent on command using package-style naming convention (e.g. "myorg.myextension.mycommand") to avoid collisions with other extensions as [mentioned in How to Write Extensions doc](https://github.com/adobe/brackets/wiki/How%20to%20write%20extensions#uihooks).
 
 Button to "Copy to Current Document" inserts Table HTML markup at the current selection. It only works for full editor.
 
