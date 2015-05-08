@@ -28,6 +28,10 @@ define({
     //Menu
     "MENU_SHOW_SHORTCUTS"                       : "Tastenkombinationen anzeigen",
     
+    // Context Menu
+    "CMENU_OVERRIDE"                            : "Tastenkombination für Befehl überschreiben",
+    "CMENU_DISABLE"                             : "Tastenkombination deaktivieren",
+    
     //Table
     "TABLE_BASE_KEY"                            : "Haupttaste",
     "TABLE_KEY_BINDING"                         : "Tastenkombination",
