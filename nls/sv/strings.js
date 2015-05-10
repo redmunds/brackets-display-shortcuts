@@ -28,6 +28,10 @@ define({
     //Menu
     "MENU_SHOW_SHORTCUTS"                       : "Visa kortkommandon",
     
+    // Context Menu
+    "CMENU_OVERRIDE"                            : "Skriv över kortkommando för åtgärd",
+    "CMENU_DISABLE"                             : "Avaktivera kortkommando",
+    
     //Table
     "TABLE_BASE_KEY"                            : "Grundtangent",
     "TABLE_KEY_BINDING"                         : "Tangentkombination",
