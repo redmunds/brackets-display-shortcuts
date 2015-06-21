@@ -30,15 +30,17 @@ define(function (require, exports, module) {
     
     // Brackets modules
     var _                   = brackets.getModule("thirdparty/lodash"),
-        Commands            = brackets.getModule("command/Commands"),
+        CodeMirror          = brackets.getModule("thirdparty/CodeMirror2/lib/codemirror"),
         CommandManager      = brackets.getModule("command/CommandManager"),
+        Commands            = brackets.getModule("command/Commands"),
         DocumentManager     = brackets.getModule("document/DocumentManager"),
         EditorManager       = brackets.getModule("editor/EditorManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
+        MainViewManager     = brackets.getModule("view/MainViewManager"),
         Menus               = brackets.getModule("command/Menus"),
-        WorkspaceManager    = brackets.getModule("view/WorkspaceManager"),
         StringUtils         = brackets.getModule("utils/StringUtils"),
+        WorkspaceManager    = brackets.getModule("view/WorkspaceManager"),
         Strings             = require("strings");
 
     var panelHtml           = require("text!templates/bottom-panel.html"),
@@ -378,7 +380,7 @@ define(function (require, exports, module) {
             _clearSortingEventHandlers();
             panel.hide();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(false);
-            EditorManager.focusEditor();
+            MainViewManager.focusActivePane();
         } else {
             panel.show();
             CommandManager.get(TOGGLE_SHORTCUTS_ID).setChecked(true);
@@ -386,7 +388,7 @@ define(function (require, exports, module) {
             initKeyList();
             _showShortcuts();
         }
-        EditorManager.resizeEditor();
+        WorkspaceManager.recomputeLayout();
     }
 
     function _insertShortcutTemplate(contextCmd, doc) {
