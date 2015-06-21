@@ -537,7 +537,7 @@ define(function (require, exports, module) {
             }
         });
 
-        $shortcutsPanel.find(".copy-table").click(_copyTableToCurrentDoc());
+        $shortcutsPanel.find(".copy-table").click(_copyTableToCurrentDoc);
 
         $shortcutsPanel.find(".close").click(function () {
             CommandManager.execute(TOGGLE_SHORTCUTS_ID);
