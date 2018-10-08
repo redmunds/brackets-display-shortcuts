@@ -23,7 +23,7 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, Mustache, CodeMirror, _showShortcuts, window */
+/*global define, brackets, $, CodeMirror, _showShortcuts, window */
 
 define(function (require, exports, module) {
     "use strict";
@@ -39,6 +39,7 @@ define(function (require, exports, module) {
         KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
         MainViewManager     = brackets.getModule("view/MainViewManager"),
         Menus               = brackets.getModule("command/Menus"),
+        Mustache            = brackets.getModule("thirdparty/mustache/mustache"),
         StringUtils         = brackets.getModule("utils/StringUtils"),
         WorkspaceManager    = brackets.getModule("view/WorkspaceManager"),
         Strings             = require("strings");
@@ -50,7 +51,6 @@ define(function (require, exports, module) {
         DISABLE_SHORTCUT    = "redmunds-show-shortcuts.context.disable",
         PANEL_MENU          = "shortcuts-panel-context-menu",
         keyList = [],
-        loaded = false,
         panel,
         togglePanelShortcut = [{
             // Note: Brackets will write error message to console
@@ -495,7 +495,7 @@ define(function (require, exports, module) {
     }
 
     function init() {
-        var $shortcutsPanel, $shortcutsContent, s, help_menu, panel_cmenu;
+        var $shortcutsPanel, s, help_menu, panel_cmenu;
 
         ExtensionUtils.loadStyleSheet(module, "shortcuts.css");
 
@@ -519,7 +519,6 @@ define(function (require, exports, module) {
         panel.hide();
 
         $shortcutsPanel = $("#shortcuts");
-        $shortcutsContent = $shortcutsPanel.find(".resizable-content");
 
         // Create context menu
         panel_cmenu = Menus.registerContextMenu(PANEL_MENU);
