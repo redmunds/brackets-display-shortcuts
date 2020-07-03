@@ -160,6 +160,8 @@ define(function (require, exports, module) {
                     if (key) {
                         base = _getBaseKey(i);
                         command = CommandManager.get(key.commandID);
+                        if(command === undefined)
+                            continue;
 
                         // Listen for keybinding changes
                         command.on("keyBindingAdded.bds keyBindingRemoved.bds", _updateKeyBindings);
